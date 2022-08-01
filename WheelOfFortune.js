@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import cokeStudio from './assets/cokeStudio.png';
+import React, { Component } from "react";
+import cokeStudio from "./assets/cokeStudio.png";
 import {
   View,
   StyleSheet,
@@ -7,14 +7,14 @@ import {
   Animated,
   TouchableOpacity,
   Image,
-} from 'react-native';
-import * as d3Shape from 'd3-shape';
+} from "react-native";
+import * as d3Shape from "d3-shape";
 
-import Svg, {G, Text, TSpan, Path, Pattern} from 'react-native-svg';
+import Svg, { G, Text, TSpan, Path, Pattern } from "react-native-svg";
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get("screen");
 
 class WheelOfFortune extends Component {
   constructor(props) {
@@ -70,11 +70,11 @@ class WheelOfFortune extends Component {
     this.prepareWheel();
     this.resetWheelState();
     this.angleListener();
-    this._onPress();
+    // this._onPress();
   };
 
   angleListener = () => {
-    this._angle.addListener(event => {
+    this._angle.addListener((event) => {
       if (this.state.enabled) {
         this.setState({
           enabled: false,
@@ -95,21 +95,21 @@ class WheelOfFortune extends Component {
   }
 
   makeWheel = () => {
-    const data = Array.from({length: this.numberOfSegments}).fill(1);
+    const data = Array.from({ length: this.numberOfSegments }).fill(1);
     const arcs = d3Shape.pie()(data);
     var colors = this.props.options.colors
       ? this.props.options.colors
       : [
-          '#E07026',
-          '#E8C22E',
-          '#ABC937',
-          '#4F991D',
-          '#22AFD3',
-          '#5858D0',
-          '#7B48C8',
-          '#D843B9',
-          '#E23B80',
-          '#D82B2B',
+          "#E07026",
+          "#E8C22E",
+          "#ABC937",
+          "#4F991D",
+          "#22AFD3",
+          "#5858D0",
+          "#7B48C8",
+          "#D843B9",
+          "#E23B80",
+          "#D82B2B",
         ];
     return arcs.map((arc, index) => {
       const instance = d3Shape
@@ -140,6 +140,7 @@ class WheelOfFortune extends Component {
   };
 
   _onPress = () => {
+    console.log("i'm here");
     const duration = this.props.options.duration || 9000;
 
     this.setState({
@@ -167,13 +168,14 @@ class WheelOfFortune extends Component {
       x={x - number.length * 5}
       y={y - 80}
       fill={
-        this.props.options.textColor ? this.props.options.textColor : '#fff'
+        this.props.options.textColor ? this.props.options.textColor : "#fff"
       }
       textAnchor="middle"
-      fontSize={this.fontSize}>
-      {Array.from({length: number.length}).map((_, j) => {
+      fontSize={this.fontSize}
+    >
+      {Array.from({ length: number.length }).map((_, j) => {
         // Render reward text vertically
-        if (this.props.options.textAngle === 'vertical') {
+        if (this.props.options.textAngle === "vertical") {
           return (
             <TSpan x={x} dy={this.fontSize} key={`arc-${i}-slice-${j}`}>
               {number.charAt(j)}
@@ -186,7 +188,8 @@ class WheelOfFortune extends Component {
             <TSpan
               y={y - 40}
               dx={this.fontSize * 0.07}
-              key={`arc-${i}-slice-${j}`}>
+              key={`arc-${i}-slice-${j}`}
+            >
               {number.charAt(j)}
             </TSpan>
           );
@@ -201,8 +204,8 @@ class WheelOfFortune extends Component {
         {this._renderKnob()}
         <Animated.View
           style={{
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: "center",
+            justifyContent: "center",
             transform: [
               {
                 rotate: this._angle.interpolate({
@@ -219,18 +222,18 @@ class WheelOfFortune extends Component {
             height: width - 20,
             borderRadius: (width - 20) / 2,
             opacity: this.state.wheelOpacity,
-          }}>
-            
+          }}
+        >
           <Animated.Image
             source={cokeStudio}
             width={this.state.gameScreen}
             height={this.state.gameScreen}
             viewBox={`0 0 ${width} ${width}`}
             style={{
-              transform: [{rotate: `-${this.angleOffset}deg`}],
+              transform: [{ rotate: `-${this.angleOffset}deg` }],
               margin: 10,
-            }}>
-          </Animated.Image>
+            }}
+          ></Animated.Image>
         </Animated.View>
       </View>
     );
@@ -245,11 +248,11 @@ class WheelOfFortune extends Component {
       Animated.divide(
         Animated.modulo(
           Animated.subtract(this._angle, this.angleOffset),
-          this.oneTurn,
+          this.oneTurn
         ),
-        new Animated.Value(this.angleBySegment),
+        new Animated.Value(this.angleBySegment)
       ),
-      1,
+      1
     );
 
     return (
@@ -257,7 +260,7 @@ class WheelOfFortune extends Component {
         style={{
           width: knobSize,
           height: knobSize * 2,
-          justifyContent: 'flex-end',
+          justifyContent: "flex-end",
           zIndex: 1,
           opacity: this.state.wheelOpacity,
           transform: [
@@ -265,29 +268,31 @@ class WheelOfFortune extends Component {
               rotate: YOLO.interpolate({
                 inputRange: [-1, -0.5, -0.0001, 0.0001, 0.5, 1],
                 outputRange: [
-                  '0deg',
-                  '0deg',
-                  '35deg',
-                  '-35deg',
-                  '0deg',
-                  '0deg',
+                  "0deg",
+                  "0deg",
+                  "35deg",
+                  "-35deg",
+                  "0deg",
+                  "0deg",
                 ],
               }),
             },
           ],
-        }}>
+        }}
+      >
         <Svg
           width={knobSize}
           height={(knobSize * 100) / 57}
           viewBox={`0 0 57 100`}
           style={{
-            transform: [{translateY: 8}],
-          }}>
+            transform: [{ translateY: 8 }],
+          }}
+        >
           <Image
             source={
               this.props.options.knobSource
                 ? this.props.options.knobSource
-                : require('./assets/knob.png')
+                : require("./assets/knob.png")
             }
             style={{ width: knobSize, height: (knobSize * 100) / 57 }}
           />
@@ -311,13 +316,14 @@ class WheelOfFortune extends Component {
       <View style={styles.container}>
         <TouchableOpacity
           style={{
-            position: 'absolute',
+            position: "absolute",
             width: width,
             height: height / 2,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Animated.View style={[styles.content, {padding: 10}]}>
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Animated.View style={[styles.content, { padding: 10 }]}>
             {this._renderSvgWheel()}
           </Animated.View>
         </TouchableOpacity>
@@ -332,16 +338,16 @@ export default WheelOfFortune;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   content: {},
   startText: {
     fontSize: 50,
-    color: '#fff',
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.4)',
-    textShadowOffset: {width: -1, height: 1},
+    color: "#fff",
+    fontWeight: "bold",
+    textShadowColor: "rgba(0, 0, 0, 0.4)",
+    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 10,
   },
 });
