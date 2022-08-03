@@ -15,7 +15,8 @@ import Svg, { G, Text, TSpan, Path, Pattern } from "react-native-svg";
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 const { width, height } = Dimensions.get("screen");
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 class WheelOfFortune extends Component {
   constructor(props) {
     super(props);
@@ -140,7 +141,6 @@ class WheelOfFortune extends Component {
   };
 
   _onPress = () => {
-    console.log("i'm here");
     const duration = this.props.options.duration || 9000;
 
     this.setState({
@@ -226,12 +226,11 @@ class WheelOfFortune extends Component {
         >
           <Animated.Image
             source={cokeStudio}
-            width={this.state.gameScreen}
-            height={this.state.gameScreen}
             viewBox={`0 0 ${width} ${width}`}
             style={{
               transform: [{ rotate: `-${this.angleOffset}deg` }],
-              margin: 10,
+              width: windowWidth * 0.48,
+              height: windowWidth * 0.48,
             }}
           ></Animated.Image>
         </Animated.View>

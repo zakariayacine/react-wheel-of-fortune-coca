@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reactNavigation1",
-    "slug": "reactNavigation1",
+    "name": "CokeStudioV2",
+    "slug": "CokeStudioV2",
     "version": "1.0.0",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.zakariayacineboucetta.CokeStudioWheel"
     },
     "web": {
       "favicon": "./assets/favicon.png"

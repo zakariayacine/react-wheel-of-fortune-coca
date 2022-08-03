@@ -5,6 +5,9 @@ import winRingPhone from "./assets/winRingPhone.png";
 import winSelfyPerch from "./assets/winSelfyPerch.png";
 import winTawel from "./assets/winTawel.png";
 import winTeniss from "./assets/winTeniss.png";
+import bg from "./assets/bg.png";
+import cokeStudio from "./assets/cokeStudio.png";
+import cokeStudioMixer from "./assets/cokeStudioMixer.png";
 import {
   View,
   Text,
@@ -14,7 +17,9 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ImageBackground,
   DevSettings,
+  Alert,
 } from "react-native";
 
 import WheelOfFortune from "./WheelOfFortune";
@@ -40,7 +45,7 @@ const productsList = [
     _id: "1",
     itemName: "bouteille coca cola",
     itemPic: wincocke,
-    quantity: 219,
+    quantity: 200,
   },
   {
     _id: "2",
@@ -52,13 +57,13 @@ const productsList = [
     _id: "3",
     itemName: "perche selfy",
     itemPic: winSelfyPerch,
-    quantity: 8,
+    quantity: 23,
   },
   {
     _id: "4",
     itemName: "serviette",
     itemPic: winTawel,
-    quantity: 3,
+    quantity: 13,
   },
   {
     _id: "5",
@@ -75,12 +80,6 @@ const productsList = [
 ];
 
 const getRandomIndex = (max) => Math.floor(Math.random() * max);
-// bouteille coca cola : 73% - 219
-// porte clef : 17.66% - 53
-// perche selfy : 2,66% - 8
-// serviette : 1% - 3
-// ecouteurs : 3.66% - 11
-// beach : 2% - 6
 class Speenwheel extends Component {
   constructor(props) {
     super(props);
@@ -95,6 +94,7 @@ class Speenwheel extends Component {
       },
       productsList,
       itemsLenght: generateItems(productsList).length,
+      drawerOpen: true,
     };
     this.child = null;
   }
@@ -129,7 +129,6 @@ class Speenwheel extends Component {
           itemsLenght: itemsIds.length,
         }),
         () => {
-          console.log("awesome");
           storage.save({
             key: "products",
             data: this.state.productsList,
@@ -169,93 +168,139 @@ class Speenwheel extends Component {
       onRef: (ref) => (this.child = ref),
     };
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle={"light-content"} />
-        <WheelOfFortune
-          options={wheelOptions}
-          getWinner={(value, index) => {
-            this.setState((prev) => ({
-              ...prev.productsList,
-              prize: {
-                ...prev.prize,
-                winnerValue: value,
-                winnerIndex: index,
-              },
-            }));
+      <ImageBackground source={bg} style={{ flex: 1, resizeMode: "cover" }}>
+        <View
+          style={{
+            alignItems: "center",
+            height: "100%",
           }}
-        />
-        {!this.state.prize.started && this.state.itemsLenght !== 0 && (
-          <View style={styles.startButtonView}>
-            <TouchableOpacity
-              onPress={() => {
-                this.buttonPress();
-              }}
-              style={styles.startButton}
-            >
-              <Text style={styles.startButtonText}>
-                Faites tourner pour gagner!
-              </Text>
-            </TouchableOpacity>
+        >
+          <View style={styles.container}>
+            <StatusBar barStyle={"light-content"} />
+            <View>
+              <WheelOfFortune
+                options={wheelOptions}
+                getWinner={(value, index) => {
+                  this.setState((prev) => ({
+                    ...prev.productsList,
+                    prize: {
+                      ...prev.prize,
+                      winnerValue: value,
+                      winnerIndex: index,
+                    },
+                  }));
+                }}
+              />
+            </View>
+            {!this.state.prize.started && this.state.itemsLenght !== 0 && (
+              <View style={styles.startButtonView}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.buttonPress();
+                  }}
+                  style={styles.startButton}
+                >
+                  <Text style={styles.startButtonText}>Faites tourner !</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {!this.state?.itemsLenght && (
+              <View style={styles.startButtonView}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({
+                      prize: {
+                        winnerValue: null,
+                        winnerIndex: null,
+                        started: false,
+                        price: null,
+                        winner: 1,
+                      },
+                      productsList,
+                      itemsLenght: generateItems(productsList)?.length,
+                    });
+                  }}
+                  style={styles.startButton}
+                >
+                  <Text style={styles.startButtonText}>Reset Game!</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            {this.state.prize.winnerIndex != null && (
+              <View style={styles.winnerView}>
+                <Image
+                  source={this.state.prize.price}
+                  style={{
+                    alignContent: "center",
+                    alignItems: "center",
+                    position: "absolute",
+                    width: windowWidth,
+                    height: windowHeight,
+                    overflow: "visible",
+                    flexWrap: "wrap",
+                  }}
+                ></Image>
+                <Text style={styles.winnerText}>
+                  {participants[this.state.prize.winnerIndex]}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({
+                      prize: {
+                        winnerValue: null,
+                        winnerIndex: null,
+                        started: false,
+                        price: null,
+                        winner: 1,
+                      },
+                    });
+                    this.child?._tryAgain();
+                  }}
+                  style={styles.tryAgainButton}
+                >
+                  <Text style={styles.tryAgainText}>RÉESSAYER</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
-        )}
-        {!this.state.itemsLenght && (
-          <View style={styles.startButtonView}>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  prize: {
-                    winnerValue: null,
-                    winnerIndex: null,
-                    started: false,
-                    price: null,
-                    winner: 1,
-                  },
-                  productsList,
-                  itemsLenght: generateItems(productsList).length,
-                });
-              }}
-              style={styles.startButton}
-            >
-              <Text style={styles.startButtonText}>Reset Game!</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        {this.state.prize.winnerIndex != null && (
-          <View style={styles.winnerView}>
-            <Image
-              source={this.state.prize.price}
-              style={{
-                alignContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                width: windowWidth,
-                height: windowHeight,
-                overflow: "visible",
-              }}
-            ></Image>
-            <Text style={styles.winnerText}>
-              {participants[this.state.prize.winnerIndex]}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  prize: {
-                    winnerValue: null,
-                    winnerIndex: null,
-                    started: false,
-                    price: null,
-                    winner: 1,
-                  },
-                });
-                this.child._tryAgain();
-              }}
-              style={styles.tryAgainButton}
-            >
-              <Text style={styles.tryAgainText}>RÉESSAYER</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+          <Image
+            source={cokeStudioMixer}
+            style={{
+              alignContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              width: windowWidth * 0.1,
+              height: windowHeight * 0.23,
+              overflow: "visible",
+            }}
+          ></Image>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            this.setState({
+              prize: {
+                winnerValue: null,
+                winnerIndex: null,
+                started: false,
+                price: null,
+                winner: 1,
+              },
+              productsList,
+              itemsLenght: generateItems(productsList)?.length,
+            });
+          }}
+          style={{
+            position: "absolute",
+            marginLeft: 20,
+            marginTop: 10,
+            padding: 40,
+          }}
+        >
+          <Text style={{ fontSize: 20, color: "white", position: "absolute" }}>
+            {this.state.itemsLenght}
+          </Text>
+        </TouchableOpacity>
+      </ImageBackground>
     );
   }
 }
@@ -273,22 +318,24 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: "rgba(0,0,0,0.5)",
-    marginTop: 600,
+    marginTop: windowWidth * 0.3,
     borderRadius: 15,
     padding: 15,
   },
   startButtonText: {
     fontSize: 50,
+    width: 360,
     color: "#fff",
     fontWeight: "bold",
   },
   winnerView: {
+    opacity: 1,
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
   },
   winnerText: {
-    marginTop: 500,
+    marginTop: windowWidth * 0.3,
     fontSize: 30,
   },
   tryAgainButton: {
