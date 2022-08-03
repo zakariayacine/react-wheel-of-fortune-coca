@@ -6,6 +6,7 @@ import winSelfyPerch from "./assets/winSelfyPerch.png";
 import winTawel from "./assets/winTawel.png";
 import winTeniss from "./assets/winTeniss.png";
 import bg from "./assets/bg.png";
+import counter from "./assets/counter.png";
 import cokeStudio from "./assets/cokeStudio.png";
 import cokeStudioMixer from "./assets/cokeStudioMixer.png";
 import {
@@ -21,13 +22,27 @@ import {
   DevSettings,
   Alert,
 } from "react-native";
-
+import { Audio } from 'expo-av';
 import WheelOfFortune from "./WheelOfFortune";
 import storage from "./storage";
 import { error } from "webpack-dev-server/lib/utils/colors";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const participants = [""];
+
+const on_press_handle = ()=>{
+ 
+ 
+  // it shuld be async function .
+  (async () => {
+          const play_yes = await Audio.Sound.createAsync(
+          require('./assets/bg.mp3'),
+                         { shouldPlay: true }
+                         );
+                 })();
+                 
+                 
+ }
 
 const generateItems = (products) => {
   const itemsId = [];
@@ -45,25 +60,25 @@ const productsList = [
     _id: "1",
     itemName: "bouteille coca cola",
     itemPic: wincocke,
-    quantity: 200,
+    quantity: 220,
   },
   {
     _id: "2",
     itemName: "porte clef",
     itemPic: winRingPhone,
-    quantity: 53,
+    quantity: 51,
   },
   {
     _id: "3",
     itemName: "perche selfy",
     itemPic: winSelfyPerch,
-    quantity: 23,
+    quantity: 9,
   },
   {
     _id: "4",
     itemName: "serviette",
     itemPic: winTawel,
-    quantity: 13,
+    quantity: 3,
   },
   {
     _id: "5",
@@ -197,6 +212,7 @@ class Speenwheel extends Component {
                 <TouchableOpacity
                   onPress={() => {
                     this.buttonPress();
+                    on_press_handle();
                   }}
                   style={styles.startButton}
                 >
@@ -296,9 +312,11 @@ class Speenwheel extends Component {
             padding: 40,
           }}
         >
-          <Text style={{ fontSize: 20, color: "white", position: "absolute" }}>
+          <ImageBackground source={counter} style={{ width:50 , height: 50}}>
+          <Text style={{ fontSize: 20, color: "white", position: "absolute", marginLeft:8, marginTop:10, fontWeight: 'bold'}}>
             {this.state.itemsLenght}
           </Text>
+          </ImageBackground>
         </TouchableOpacity>
       </ImageBackground>
     );

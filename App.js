@@ -23,7 +23,10 @@ function App() {
     StatusBar.setHidden(true);
   }, []);
 
-  return <Speenwheel />;
+  return (
+  <Speenwheel />
+  );
+
 }
 
 export default App;
